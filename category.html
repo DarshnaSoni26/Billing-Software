@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Billing Software</title>
+		<link
+			href="css/expert_adim.css"
+			rel="stylesheet"
+			type="text/css" />
+	</head>
+	<body>
+		<div id="navbar-container"></div>
+		<div class="outer_grey">
+			<div class="blank">
+				<h1>Category</h1>
+				<br /><br />
+				<form onsubmit="return addCat()">
+					<label class="slider_label">NAME</label><br />
+					<input
+						type="text"
+						class="slider_head"
+						id="Categoryname" /><br /><br />
+					<input
+						type="submit"
+						value="ADD"
+						class="slider_add" />
+					<br /><br />
+					<span id="Result"></span>
+				</form>
+			</div>
+		</div>
+		<script src="Navscript.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-firestore.js"></script>
+		<script src="firebaseconfig.js"></script>
+		<script>
+			function addCat() {
+				if (document.getElementById("Categoryname").value !== "") {
+					const name = document.getElementById("Categoryname").value;
+					db.collection("Categories")
+						.add({
+							name: name,
+						})
+						.then(function (docRef) {
+							document.getElementById("Result").innerHTML =
+								"Successfully added!!";
+						})
+						.catch(function (error) {
+							document.getElementById("Result").innerHTML =
+								"Some Error Occured!!";
+						});
+					document.getElementById("Categoryname").value = "";
+					setTimeout(() => {
+						document.getElementById("Result").innerHTML = "";
+					}, 2000);
+				}
+
+				return false;
+			}
+		</script>
+	</body>
+</html>

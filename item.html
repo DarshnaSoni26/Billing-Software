@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Billing Software</title>
+		<link
+			href="css/expert_adim.css"
+			rel="stylesheet"
+			type="text/css" />
+	</head>
+	<body>
+		<div id="navbar-container"></div>
+		<div class="outer_grey">
+			<div class="blank">
+				<h1>Items</h1>
+				<br /><br />
+				<form onsubmit="return addItem()">
+					<label class="slider_label">NAME</label><br />
+					<input
+						type="text"
+						id="name"
+						class="slider_head" /><br /><br />
+					<label class="slider_label">CATEGORY</label><br />
+					<select
+						class="slider_head"
+						id="categories"></select
+					><br /><br />
+					<label class="slider_label">PRICE</label><br />
+					<input
+						type="number"
+						id="price"
+						class="slider_head" /><br /><br />
+					<label class="slider_label">QUANTITY</label><br />
+					<input
+						type="number"
+						id="qty"
+						class="slider_head" /><br /><br />
+					<input
+						type="submit"
+						value="ADD"
+						class="slider_add" />
+					<br /><br />
+					<span id="Result"></span>
+				</form>
+			</div>
+		</div>
+	</body>
+	<script src="Navscript.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-firestore.js"></script>
+	<script src="firebaseconfig.js"></script>
+	<script>
+		// Function to populate categories dropdown
+		function populateCategories() {
+			const categoryDropdown = document.getElementById("categories");
+			db.collection("Categories")
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						const option = document.createElement("option");
+						option.value = doc.data().name;
+						option.text = doc.data().name;
+						categoryDropdown.appendChild(option);
+					});
+				})
+				.catch((error) => {
+					console.error("Error fetching categories: ", error);
+				});
+		}
+
+		// Call the populateCategories function when the page loads
+		window.addEventListener("load", function () {
+			populateCategories();
+		});
+
+		function addItem() {
+			const name = document.getElementById("name").value;
+			const category = document.getElementById("categories").value;
+			const price = document.getElementById("price").value;
+			const qty = document.getElementById("qty").value;
+
+			if (!name || !category || !price || !qty) {
+				document.getElementById("Result").innerHTML =
+					"Please fill in all fields!";
+				return false;
+			}
+
+			db.collection("Items")
+				.add({
+					name: name,
+					category: category,
+					price: price,
+					qty: qty,
+				})
+				.then(function () {
+					document.getElementById("Result").innerHTML = "Successfully added!!";
+				})
+				.catch(function () {
+					document.getElementById("Result").innerHTML = "Some Error Occured!!";
+				});
+			setTimeout(() => {
+				document.getElementById("Result").innerHTML = "";
+			}, 2000);
+			document.getElementById("name").value = "";
+			document.getElementById("categories").value = "";
+			document.getElementById("price").value = "";
+			document.getElementById("qty").value = "";
+			return false;
+		}
+	</script>
+</html>

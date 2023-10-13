@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Billing Software</title>
+		<link
+			href="css/expert_adim.css"
+			rel="stylesheet"
+			type="text/css" />
+	</head>
+	<body>
+		<div id="navbar-container"></div>
+		<div class="outer_grey">
+			<div class="blank">
+				<div>
+					<table id="inventoryTable">
+						<caption>
+							Show Inventory
+						</caption>
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Category</th>
+								<th>Price</th>
+								<th>Quantity</th>
+							</tr>
+						</thead>
+						<tbody id="inventoryTableBody">
+							<!-- Inventory data will be dynamically added here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="Navscript.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-firestore.js"></script>
+	<script src="firebaseconfig.js"></script>
+	<script>
+		// Function to read and display inventory data
+		function displayInventory() {
+			const inventoryTableBody = document.getElementById("inventoryTableBody");
+
+			db.collection("Items")
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						const data = doc.data();
+						const category = data.category;
+						const item = data.name;
+						const price = data.price;
+						const qty = data.qty;
+
+						// Create a new row in the table for each item
+						const row = document.createElement("tr");
+						const itemCell = document.createElement("td");
+						const categoryCell = document.createElement("td");
+						const priceCell = document.createElement("td");
+						const qtyCell = document.createElement("td");
+
+						itemCell.textContent = item;
+						categoryCell.textContent = category;
+						priceCell.textContent = price;
+						qtyCell.textContent = qty;
+
+						// Append cells to the row
+						row.appendChild(itemCell);
+						row.appendChild(categoryCell);
+						row.appendChild(priceCell);
+						row.appendChild(qtyCell);
+
+						// Append the row to the table body
+						inventoryTableBody.appendChild(row);
+					});
+				})
+				.catch((error) => {
+					console.error("Error fetching inventory: ", error);
+				});
+		}
+
+		// Call the displayInventory function when the page loads
+		window.addEventListener("load", function () {
+			displayInventory();
+		});
+	</script>
+</html>

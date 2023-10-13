@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Billing Software</title>
+		<link
+			href="css/expert_adim.css"
+			rel="stylesheet"
+			type="text/css" />
+	</head>
+	<body>
+		<div id="navbar-container"></div>
+		<div class="outer_grey">
+			<div class="blank">
+				<h1>Add Item</h1>
+				<br /><br />
+				<form onsubmit="return addInvoice()">
+					<table>
+						<thead>
+							<tr>
+								<th>Category</th>
+								<th>Item</th>
+								<th>Qty Available</th>
+								<th>Price Per Item</th>
+								<th>Enter Qty</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<select
+										class="data-inputs"
+										id="category"
+										name="category"
+										onchange="populateItems()">
+										<option>Category</option>
+									</select>
+								</td>
+								<td>
+									<select
+										class="data-inputs"
+										id="item"
+										name="item"
+										onclick="details()">
+										<option>Items</option>
+									</select>
+								</td>
+								<td><span id="qtyavailable">-</span></td>
+								<td><span id="perprice">-</span></td>
+								<td>
+									<input
+										type="text"
+										class="data-inputs"
+										id="quantity" /><br /><br />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<br />
+					<input
+						type="submit"
+						value="ADD"
+						class="slider_add" />
+					<br /><br />
+					<span id="Result"></span>
+				</form>
+
+				<br /><br />
+
+				<div id="invoiceTable">
+					<table>
+						<caption>
+							Invoice
+						</caption>
+						<thead>
+							<tr>
+								<th>Sno.</th>
+								<th>Item</th>
+								<th>Qty</th>
+								<th>Price</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="Details">
+						<label class="slider_label"
+							>Total Amount : <span id="total">{}</span></label
+						><br />
+						<label class="slider_label">CGST : <span id="cgst">{}</span></label
+						><br />
+						<label class="slider_label">SGST : <span id="sgst">{}</span></label
+						><br />
+						<label class="slider_label"
+							>Amount Payable : <span id="payable">{}</span></label
+						><br />
+					</div>
+					<br /><br />
+				</div>
+
+				<button
+					class="slider_add"
+					onclick="purchased()">
+					BUY
+				</button>
+			</div>
+		</div>
+	</body>
+	<script src="Navscript.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-firestore.js"></script>
+	<script src="firebaseconfig.js"></script>
+	<script src="invoice.js"></script>
+</html>

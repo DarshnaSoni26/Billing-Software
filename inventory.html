@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Billing Software</title>
+		<link
+			href="css/expert_adim.css"
+			rel="stylesheet"
+			type="text/css" />
+	</head>
+	<body>
+		<div id="navbar-container"></div>
+		<div class="outer_grey">
+			<div class="blank">
+				<h1>Inventory</h1>
+				<br /><br />
+				<form onsubmit="return addInventory()">
+					<table>
+						<thead>
+							<tr>
+								<th>Category</th>
+								<th>Item</th>
+								<th>Enter Qty</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<select
+										class="data-inputs"
+										id="category"
+										onchange="populateItems()"></select>
+								</td>
+								<td>
+									<select
+										class="data-inputs"
+										id="item"></select>
+								</td>
+								<td>
+									<input
+										type="text"
+										class="data-inputs"
+										id="quantity" /><br /><br />
+								</td>
+								<td>
+									<input
+										type="text"
+										class="data-inputs"
+										id="price" /><br /><br />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<br />
+					<input
+						type="submit"
+						value="ADD"
+						class="slider_add" />
+					<br /><br />
+					<span id="Result"></span>
+				</form>
+			</div>
+		</div>
+	</body>
+	<script src="Navscript.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-firestore.js"></script>
+	<script src="firebaseconfig.js"></script>
+	<script>
+		// Function to populate categories dropdown
+		function populateCategories() {
+			const categoryDropdown = document.getElementById("category");
+			db.collection("Categories")
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						const option = document.createElement("option");
+						option.value = doc.data().name;
+						option.text = doc.data().name;
+						categoryDropdown.appendChild(option);
+					});
+				})
+				.catch((error) => {
+					console.error("Error fetching categories: ", error);
+				});
+		}
+
+		// Function to populate items dropdown based on the selected category
+		function populateItems() {
+			const categoryDropdown = document.getElementById("category");
+			const selectedCategory = categoryDropdown.value;
+			const itemDropdown = document.getElementById("item");
+
+			// Clear the existing items in the dropdown
+			while (itemDropdown.firstChild) {
+				itemDropdown.removeChild(itemDropdown.firstChild);
+			}
+
+			// Fetch items based on the selected category
+			db.collection("Items")
+				.where("category", "==", selectedCategory)
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						const option = document.createElement("option");
+						option.value = doc.data().name;
+						option.text = doc.data().name;
+						itemDropdown.appendChild(option);
+					});
+				})
+				.catch((error) => {
+					console.error("Error fetching items: ", error);
+				});
+		}
+
+		// Call the populateCategories function when the page loads
+		window.addEventListener("load", function () {
+			populateCategories();
+		});
+
+		function addInventory() {
+			const category = document.getElementById("category").value;
+			const item = document.getElementById("item").value;
+			const qty = document.getElementById("quantity").value;
+			const price = document.getElementById("price").value;
+
+			if (!category || !item || !qty || !price) {
+				document.getElementById("Result").innerHTML =
+					"Please fill in all fields!";
+				return false;
+			}
+
+			// Check if a matching document exists in 'Items' collection
+			db.collection("Items")
+				.where("category", "==", category)
+				.where("name", "==", item)
+				.get()
+				.then((querySnapshot) => {
+					if (querySnapshot.size > 0) {
+						// Matching document found, update it
+						querySnapshot.forEach((doc) => {
+							const itemId = doc.id;
+							const itemRef = db.collection("Items").doc(itemId);
+
+							// Update the item in 'Items' collection
+							itemRef
+								.update({
+									qty: qty,
+									price: price,
+								})
+								.then(function () {
+									// Successfully updated
+									document.getElementById("Result").innerHTML =
+										"Successfully updated in Inventory!";
+								})
+								.catch(function (error) {
+									console.error(
+										"Error updating in 'Items' collection: ",
+										error
+									);
+								});
+						});
+					} else {
+						// No matching document found in 'Items'
+						document.getElementById("Result").innerHTML =
+							"Category and Item not found in the 'Items' collection.";
+					}
+				})
+				.catch(function (error) {
+					console.error("Error checking 'Items' collection: ", error);
+				});
+
+			document.getElementById("category").value = "";
+			document.getElementById("item").value = "";
+			document.getElementById("quantity").value = "";
+			document.getElementById("price").value = "";
+			return false;
+		}
+	</script>
+</html>
