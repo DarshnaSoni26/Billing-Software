@@ -28,7 +28,7 @@ Before you start using the Billing Software, make sure you have the following so
    - Your Billing Software will open in a new browser tab.
 4. **Firebase**
   - Make sure to connect to Firebase properly so that the database connection and other things can work smoothly.
-  - checkout firebaseconfig.js in the folder structure
+  - Create 2 collections in firestore "Categories", "Items"
 
 ## Usage
 
