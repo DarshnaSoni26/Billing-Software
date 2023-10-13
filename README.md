@@ -26,6 +26,9 @@ Before you start using the Billing Software, make sure you have the following so
 3. **Run with Live Server**:
    - In Visual Studio Code, right-click on the `index.html` file and select "Open with Live Server." This will start a live development server.
    - Your Billing Software will open in a new browser tab.
+4. **Firebase**
+  - Make sure to connect to Firebase properly so that the database connection and other things can work smoothly.
+  - checkout firebaseconfig.js in the folder structure
 
 ## Usage
 
